@@ -262,9 +262,21 @@ class Migration_Sprig extends Migration {
 
 		// Set the column's default value
 		$column->default = $field->default;
-		
+
+		// This is wrong
 		// The column is nullable if the field is not empty
-		$column->nullable = ! $field->empty;
+//		$column->nullable = ! $field->empty;
+
+		// This is better.. but still wrong
+		// The column is nullable if the field allows empty values
+		if ($field->empty == TRUE AND $field->null == TRUE)
+		{
+			$column->nullable = TRUE;
+		}
+		else
+		{
+			$column->nullable = FALSE;
+		}
 		
 		// Return the column as an array
 		return array($column);
