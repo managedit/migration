@@ -232,9 +232,27 @@ class Migration_Sprig extends Migration {
 			$column = Database_Column::factory('tinyint');
 		}
 
+		// Process blob fields
+		elseif ($field instanceof Sprig_Field_Blob)
+		{
+			if ($field instanceof Sprig_Field_LongBlob)
+			{
+				$column = Database_Column::factory('longblob');
+			}
+			else
+			{
+				$column = Database_Column::factory('blob');
+			}
+
+			// TODO: Ugly hack, fix it. (Blob datatypes dont take parameters).
+			unset($column->max_length);
+			// TODO: Ugly hack, fix it. (Blob datatypes are binary, but you cant specify it? at least with MySQL? WTF.).
+			$column->binary = FALSE;
+		}
+
 		// Set the value of the column's name
 		$column->name = $field->column;
-		
+
 		// Set the column's default value
 		$column->default = $field->default;
 		
