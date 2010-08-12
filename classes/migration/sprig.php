@@ -174,9 +174,16 @@ class Migration_Sprig extends Migration {
 				
 				// Generates a table column for that foreign field
 				$column = current($this->_columns($foreign_field, $table));
-				
-				// Renames the column to the standard foreign key format
-				$column->name = Inflector::singular($references->table()).'_'.$pk;
+
+				if (isset($field->column))
+				{
+					$column->name = $field->column;
+				}
+				else
+				{
+					// Renames the column to the standard foreign key format
+					$column->name = Inflector::singular($references->table()).'_'.$pk;
+				}
 				
 				// If the column is an integer
 				if ($column instanceof Database_Column_Int)
