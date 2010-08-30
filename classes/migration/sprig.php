@@ -239,6 +239,13 @@ class Migration_Sprig extends Migration {
 			$column = Database_Column::factory('tinyint');
 		}
 
+		// Process boolean fields
+		elseif ($field instanceof Sprig_Field_Float)
+		{
+			// Very simply, a tinyint is a 0 or a 1
+			$column = Database_Column::factory('float');
+		}
+
 		// Process blob fields
 		elseif ($field instanceof Sprig_Field_Blob)
 		{
@@ -255,6 +262,12 @@ class Migration_Sprig extends Migration {
 			unset($column->max_length);
 			// TODO: Ugly hack, fix it. (Blob datatypes are binary, but you cant specify it? at least with MySQL? WTF.).
 			$column->binary = FALSE;
+		}
+
+		// Fail if we cant know about the field type.
+		else
+		{
+			throw new Kohana_Exception('Attempting to migrate an unknown field type: :class', array(':class' => get_class($field)));
 		}
 
 		// Set the value of the column's name
